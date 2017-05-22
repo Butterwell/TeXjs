@@ -6,9 +6,6 @@ Take a look at the [documention and (eventually) working example](https://butter
 #### TODO
 Nearly everything. To wit:
 
-* Create TeX.js
-* Load tex.web
-* Add nearley.js to project
 * Create and add target "hello world" .dvi to project using some other TeX
 * Iterate:
   * Update nearley grammar to parse tex.web, parse tex.web into AST (abstract syntax tree)
