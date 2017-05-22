@@ -6,9 +6,10 @@ Take a look at the [documention and (eventually) working example](https://butter
 #### TODO
 Nearly everything. To wit:
 
-* Create and add target "hello world" .dvi to project using some other TeX
-* Iterate:
-  * Update nearley grammar to parse tex.web, parse tex.web into AST (abstract syntax tree)
+* Create web.ne, a nearley grammar to parse tex.web
+* Iterate until can create good :
+  * Update web.ne, parse tex.web into AST (abstract syntax tree)
   * Display parse
   * Generate JavaScript code from AST
-  * Create "hello world" .dvi
+* Create "hello world" .dvi
+* Create and add target "hello world" .dvi to project using some other TeX

@@ -1,5 +1,3 @@
-var files = ["tex.web"]
-
 var get_file_chunk = function (url, range, callback) {
   var xhr = new XMLHttpRequest;
 
@@ -29,11 +27,17 @@ var get_file = function (url, callback) {
   xhr.send(null);
 }
 
-get_file( files[0], function(tex_web) {
-	var content = document.getElementById("content")
-	var pre = document.createElement("pre")
-	pre.textContent = tex_web
-	content.appendChild(pre)
+get_file( "web.ne", function( webne ) {
+})
+
+var tex_web;
+get_file( "tex.web", function(file) {
+	tex_web = file
+	
+	//var content = document.getElementById("content")
+	//var pre = document.createElement("pre")
+	//pre.textContent = tex_web
+	//content.appendChild(pre)
 	console.log(tex_web.length)
 })
 
