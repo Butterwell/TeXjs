@@ -32,7 +32,7 @@ get_file( "tex.web", function( tex_web) {
 	parseable.push({
 		file: "tex.web",
 		content: tex_web
-	}
+	})
 })
 
 
