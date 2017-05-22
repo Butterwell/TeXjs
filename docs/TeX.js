@@ -27,19 +27,63 @@ var get_file = function (url, callback) {
   xhr.send(null);
 }
 
-get_file( "web.ne", function( webne ) {
+var parseable = []
+get_file( "tex.web", function( tex_web) {
+	parseable.push({
+		file: "tex.web",
+		content: tex_web
+	}
 })
 
-var tex_web;
-get_file( "tex.web", function(file) {
-	tex_web = file
+
+get_file( "web.ne", function( web_ne ) {
+	var content = document.getElementById("content")
+	var pre = document.createElement("pre")
+	pre.textContent = web_ne
+	content.appendChild(pre)
 	
-	//var content = document.getElementById("content")
-	//var pre = document.createElement("pre")
-	//pre.textContent = tex_web
-	//content.appendChild(pre)
-	console.log(tex_web.length)
+	compile_parser(web_ne)
+	//on_change(pre, compile_parser)
 })
+
+var parser;
+function compile_parser( source ) {
+	var nearley_parser = new nearley.Parser(grammar.ParserRules, grammar.ParserStart)
+	nearley_parser.feed( source )
+	console.log(nearley_parser.results)
+	var opts = {}
+	// Compile 
+	var c = Compile(nearley_parser.results[0], opts);
+	var src = generate(c, "e") // "parser" instead of "e"?
+	console.log( src )
+	parser = src 
+}
+
+// grammar - bootstrapped from nearley-language-bootstrapped.js
+
+// option.file - input file
+// option.out - output file
+
+// option.export - variable to set parser to. Default: grammar
+
+// Parse nearley language
+//var nearley_parser = new nearley.Parser(grammar.ParserRules, grammar.ParserStart)
+
+//var chunk = "main -> int {% function(d) {return d[0]; } %}\n" +
+//	"int -> [0-9]:+        {% function(d) {return d[0].join(''); } %}\n"
+	
+//nearley_parser.feed(chunk)
+//console.log(nearley_parser.results)
+
+//var opts = {}
+// Compile 
+//var c = Compile(nearley_parser.results[0], opts);
+//var src = generate(c, "e")
+
+// generate
+// lint
+//        lint(c, {'out': process.stderr});
+//        output.write(generate(c, opts.export));
 
 function lintNames(grm, opts) {
     var all = [];
@@ -60,30 +104,3 @@ function lintNames(grm, opts) {
 function warn(opts, err) {
 	console.log(err)
 }
-
-
-// grammar - bootstrapped from nearley-language-bootstrapped.js
-
-// option.file - input file
-// option.out - output file
-
-// option.export - variable to set parser to. Default: grammar
-
-// Parse nearley language
-var nearley_parser = new nearley.Parser(grammar.ParserRules, grammar.ParserStart)
-
-var chunk = "main -> int {% function(d) {return d[0]; } %}\n" +
-	"int -> [0-9]:+        {% function(d) {return d[0].join(''); } %}\n"
-	
-nearley_parser.feed(chunk)
-console.log(nearley_parser.results)
-
-var opts = {}
-// Compile 
-var c = Compile(nearley_parser.results[0], opts);
-var src = generate(c, "e")
-
-// generate
-// lint
-//        lint(c, {'out': process.stderr});
-//        output.write(generate(c, opts.export));
