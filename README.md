@@ -1,11 +1,11 @@
 # TeXjs
 A TeX implementation for the browser, transpiled directly from tex.web
 
+Take a look at the [documention and (eventually) working example](https://butterwell.github.io/TeXjs/).
+
 #### TODO
 Nearly everything. To wit:
 
-* Create gh-pages branch to hold active example
-* Add example.MD to main branch that points that out
 * Create TeX.js
 * Load tex.web
 * Add nearley.js to project
