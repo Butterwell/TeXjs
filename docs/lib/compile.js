@@ -1,9 +1,10 @@
-(function () {
-if (typeof(window) === 'undefined') {
-    var nearley = require('../lib/nearley.js');
-} else {
-    var nearley = window.nearley;
-}
+(function(root, factory) {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory(require('./nearley'));
+    } else {
+        root.Compile = factory(root.nearley);
+    }
+}(this, function(nearley) {
 
 function Compile(structure, opts) {
     var unique = uniquer();
@@ -117,12 +118,17 @@ function Compile(structure, opts) {
             if (!token.literal.length) {
                 return null;
             }
-            if (token.literal.length === 1) {
+            if (token.literal.length === 1 || result.config.lexer) {
                 return token;
             }
             return buildStringToken(ruleName, token, env);
         }
         if (token.token) {
+            if (result.config.lexer) {
+                var name = token.token;
+                var expr = result.config.lexer + ".has(" + JSON.stringify(name) + ") ? {type: " + JSON.stringify(name) + "} : " + name;
+                return {token: "(" + expr + ")"};
+            }
             return token;
         }
 
@@ -200,8 +206,8 @@ function Compile(structure, opts) {
             [{
                 tokens: [token.ebnf],
             }, {
-                tokens: [token.ebnf, name],
-                postprocess: {builtin: "arrconcat"}
+                tokens: [name, token.ebnf],
+                postprocess: {builtin: "arrpush"}
             }],
             env
         );
@@ -225,8 +231,8 @@ function Compile(structure, opts) {
             [{
                 tokens: [],
             }, {
-                tokens: [token.ebnf, name],
-                postprocess: {builtin: "arrconcat"}
+                tokens: [name, token.ebnf],
+                postprocess: {builtin: "arrpush"}
             }],
             env
         );
@@ -291,9 +297,6 @@ function uniquer() {
     }
 }
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = Compile;
-} else {
-    window.Compile = Compile;
-}
-})();
+return Compile;
+
+}));

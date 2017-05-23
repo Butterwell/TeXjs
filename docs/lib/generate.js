@@ -1,4 +1,10 @@
-(function () {
+(function(root, factory) {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory(require('./nearley'));
+    } else {
+        root.generate = factory(root.nearley);
+    }
+}(this, function(nearley) {
 
 function serializeRules(rules, builtinPostprocessors) {
     return "[\n    " + rules.map(function(rule) {
@@ -106,6 +112,7 @@ generate.js = generate._default = generate.javascript = function (parser, export
     output += "function id(x) {return x[0]; }\n";
     output += parser.body.join('\n');
     output += "var grammar = {\n";
+    output += "    Lexer: " + parser.config.lexer + ",\n";
     output += "    ParserRules: " +
         serializeRules(parser.rules, generate.javascript.builtinPostprocessors)
         + "\n";
@@ -123,6 +130,7 @@ generate.js = generate._default = generate.javascript = function (parser, export
 generate.javascript.builtinPostprocessors = {
     "joiner": "function joiner(d) {return d.join('');}",
     "arrconcat": "function arrconcat(d) {return [d[0]].concat(d[1]);}",
+    "arrpush": "function arrpush(d) {return d[0].concat([d[1]]);}",
     "nuller": "function(d) {return null;}",
     "id": "id"
 }
@@ -134,6 +142,7 @@ generate.cs = generate.coffee = generate.coffeescript = function (parser, export
     output += "  id = (d)->d[0]\n";
     output += tabulateString(dedentFunc(parser.body.join('\n')), '  ') + '\n';
     output += "  grammar = {\n";
+    output += "    Lexer: " + parser.config.lexer + ",\n";
     output += "    ParserRules: " +
         tabulateString(
                 serializeRules(parser.rules, generate.coffeescript.builtinPostprocessors),
@@ -152,14 +161,34 @@ generate.cs = generate.coffee = generate.coffeescript = function (parser, export
 generate.coffeescript.builtinPostprocessors = {
     "joiner": "(d) -> d.join('')",
     "arrconcat": "(d) -> [d[0]].concat(d[1])",
+    "arrpush": "(d) -> d[0].concat([d[1]])",
     "nuller": "() -> null",
     "id": "id"
-}
+};
+
+generate.ts = generate.typescript = function (parser, exportName) {
+    var output = "// Generated automatically by nearley\n";
+    output +=  "// http://github.com/Hardmath123/nearley\n";
+    output += "function id(d:any[]):any {return d[0];}\n";
+    output += parser.body.join('\n');
+    output += "interface NearleyGrammar {ParserRules:NearleyRule[]; ParserStart:string};\n";
+    output += "interface NearleyRule {name:string; symbols:NearleySymbol[]; postprocess?:(d:any[],loc?:number,reject?:{})=>any};\n";
+    output += "type NearleySymbol = string | {literal:any} | {test:(token:any) => boolean};\n";
+    output += "export var grammar : NearleyGrammar = {\n";
+    output += "    Lexer: " + parser.config.lexer + ",\n";
+    output += "    ParserRules: " + serializeRules(parser.rules, generate.typescript.builtinPostprocessors) + "\n";
+    output += "  , ParserStart: " + JSON.stringify(parser.start) + "\n";
+    output += "}\n";
+    return output;
+};
+generate.typescript.builtinPostprocessors = {
+    "joiner": "(d) => d.join('')",
+    "arrconcat": "(d) => [d[0]].concat(d[1])",
+    "nuller": "(d) => null",
+    "id": "id"
+};
 
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = generate;
-} else {
-    window.generate = generate;
-}
-})();
+return generate;
+
+}));
