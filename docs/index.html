@@ -3,16 +3,18 @@
 <head>
     <title>TeX.js</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<!-- + Nearley peices to generate a parser in the browser -->
-	<script src="lib/nearley.js"></script>
-	<script src="lib/compile.js"></script>
-	<script src="lib/nearley-language-bootstrapped.js"></script>
-	<script src="lib/generate.js"></script>
-	<!-- - Nearley peices to generate a parser in the browser -->
-    <!-- web generated Peg line parser -->
-    <script src="peg_parser.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+	<script src="lib/peg-0.10.0.js"></script>
     <script src="TeX.js"></script>
-	<script src="nearley_line_parser.js"></script>
+	<style>
+.display {
+	font-family: 'Inconsolata', monospace;
+}
+
+.line {
+	color: gray;
+}
+	</style>
 </head>
 <body>
 TeX.js - the power of TeX in the browser

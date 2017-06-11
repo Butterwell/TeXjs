@@ -1,0 +1,8 @@
+Lines
+  = head:Line tail:(Newline_then_Line)* { var a = tail; a.unshift(head); return a; }
+
+Line 
+  = [^\n]* { return ["line", text()] }
+
+Newline_then_Line
+  = [\n] tail:Line { return tail }
