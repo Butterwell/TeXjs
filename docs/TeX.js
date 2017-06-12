@@ -27,10 +27,13 @@ var get_file = function (url, callback) {
   xhr.send(null);
 }
 
+var encolor = {
+    line: function( d ) { return "<span style='color: gray'>" + d + "</span>" },
+	newline: function( d ) { return "<br>" }
+}
+
 function color_parse( d ) {
-	if (d[0] == "line") {
-		return "<span class='line'>"+d[1]+"</span>"
-	}
+	return encolor[d[0][0]](d[0][1]) + encolor[d[1][0]](d[1][0])
 }
 
 var parseable = {}
@@ -47,7 +50,7 @@ get_file( "/line.peg", function( line_grammar ) {
     get_file( "tex.web", function( tex_web ) {
 	    parseable.tex_web = tex_web
 		var parsed = peg_line_parser.parse(tex_web)
-		var display_html = parsed.map(color_parse).join('<br \>')
+		var display_html = parsed.map(color_parse).join('')
 		var display = document.createElement("div")		
 		display.className = "display"
 		display.innerHTML = display_html
