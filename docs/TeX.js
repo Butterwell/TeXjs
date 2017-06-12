@@ -38,7 +38,7 @@ function color_parse( d ) {
 
 var parseable = {}
 
-get_file( "/line.peg", function( line_grammar ) {
+get_file( "line.peg", function( line_grammar ) {
 	window.peg_line_parser = peg.generate(line_grammar)
 	var content = document.getElementById("content")
 	var h4 = document.createElement("h4")
